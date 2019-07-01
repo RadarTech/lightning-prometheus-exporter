@@ -1,0 +1,84 @@
+{{- $listenAddr := printf "%s:%s" .Values.config.listenHost .Values.config.listenPort -}}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "lightning-prometheus-exporter.fullname" . }}
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/path: {{ .Values.config.telemetryPath | quote }} 
+    prometheus.io/port: {{ .Values.config.listenPort | quote }}
+  labels:
+    app.kubernetes.io/name: {{ include "lightning-prometheus-exporter.name" . }}
+    helm.sh/chart: {{ include "lightning-prometheus-exporter.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "lightning-prometheus-exporter.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "lightning-prometheus-exporter.name" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: metrics
+              containerPort: {{ .Values.config.listenPort }}
+              protocol: TCP
+          env:
+            - name: NAMESPACE
+              value: {{ .Values.config.namespace | quote }}
+            - name: TELEMETRY_PATH
+              value: {{ .Values.config.telemetryPath | quote }}
+            - name: LISTEN_ADDRESS
+              value: {{ $listenAddr }}
+            - name: RPC_HOST
+              value: {{ .Values.config.rpcHost | quote }}
+            - name: RPC_PORT
+              value: {{ .Values.config.rpcPort | quote }}
+            - name: TLS_CERT_PATH
+              value: {{ .Values.config.tlsCertPath | quote }}
+            - name: MACAROON_PATH
+              value: {{ .Values.config.macaroonPath | quote }}
+            - name: GO_METRICS
+              value: {{ .Values.config.goMetrics | quote }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: metrics
+          readinessProbe:
+            httpGet:
+              path: /
+              port: metrics
+          volumeMounts:
+            - name: creds
+              mountPath: {{ .Values.config.macaroonPath | quote }}
+              subPath: readonly.macaroon
+            - name: creds
+              mountPath: {{ .Values.config.tlsCertPath | quote }}
+              subPath: tls.cert
+          resources:
+{{ toYaml .Values.resources | indent 12 }}
+      volumes:
+        - name: creds
+          secret:
+            secretName: {{ include "lightning-prometheus-exporter.fullname" . }}-creds
+    {{- with .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

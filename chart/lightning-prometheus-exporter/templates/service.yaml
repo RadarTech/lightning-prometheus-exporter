@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "lightning-prometheus-exporter.fullname" . }}
+  labels:
+    app.kubernetes.io/name: {{ include "lightning-prometheus-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+    helm.sh/chart: {{ include "lightning-prometheus-exporter.chart" . }}
+{{ toYaml .Values.labels | trim | indent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.config.listenPort }}
+      targetPort: metrics
+      protocol: TCP
+      name: metrics
+  selector:
+    app.kubernetes.io/name: {{ include "lightning-prometheus-exporter.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

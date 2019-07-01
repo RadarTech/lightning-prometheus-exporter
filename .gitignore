@@ -2,5 +2,4 @@
 .vscode
 
 # the binary
-lightning-prometheus-exporter
 exporter
