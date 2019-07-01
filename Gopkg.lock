@@ -11,9 +11,10 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:cd995ed68505d88ecf2fba4df4b89631c2b3d96283b09962cad6aaa06caf0825"
+  digest = "1:ef46f07858e2fcf964bcc84ad47f551011bed22e7b5ec382e3b681be68fa5f09"
   name = "github.com/btcsuite/btcd"
   packages = [
+    "btcec",
     "chaincfg",
     "chaincfg/chainhash",
     "connmgr",
@@ -29,6 +30,18 @@
   packages = ["."]
   pruneopts = "UT"
   revision = "84c8d2346e9fc8c7b947e243b9c24e6df9fd206a"
+
+[[projects]]
+  branch = "master"
+  digest = "1:d17099fb1aae071174db067e43a02780bbe534a279e0506783acd33c4f4b131c"
+  name = "github.com/btcsuite/btcutil"
+  packages = [
+    ".",
+    "base58",
+    "bech32",
+  ]
+  pruneopts = "UT"
+  revision = "9e5f4b9a998d263e3ce9c56664a7816001ac8000"
 
 [[projects]]
   branch = "master"
@@ -62,6 +75,22 @@
   pruneopts = "UT"
   revision = "63597a96ec0ad9e6d43c3fc81e809909e0237461"
   version = "v1.3.2"
+
+[[projects]]
+  digest = "1:ffe9824d294da03b391f44e1ae8281281b4afc1bdaa9588c9097785e3af10cec"
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  pruneopts = "UT"
+  revision = "8991bc29aa16c548c550c7ff78260e27b9ab7c73"
+  version = "v1.1.1"
+
+[[projects]]
+  digest = "1:aacef5f5e45685f2aeda5534d0a750dee6859de7e9088cdd06192787bb01ae6d"
+  name = "github.com/go-errors/errors"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a6af135bd4e28680facf08a3d206b454abc877a4"
+  version = "v1.0.1"
 
 [[projects]]
   digest = "1:489a99067cd08971bd9c1ee0055119ba8febc1429f9200ab0bec68d35e8c4833"
@@ -105,17 +134,18 @@
   revision = "d976af380377adda50b2d34279f1dec3507504ac"
 
 [[projects]]
-  digest = "1:ed812d3268f4f2280fa619c552cd3057ab9371286941b3c1e1d04fd6be8e021a"
+  digest = "1:b0f401d55654dc1cf39391d907229d1509e618ef522b7f23b66efadbfc14b487"
   name = "github.com/lightningnetwork/lnd"
   packages = [
     "lncfg",
     "lnrpc",
+    "lnwire",
     "macaroons",
     "tor",
   ]
   pruneopts = "UT"
-  revision = "d2186cc9da29853091175189268b073f49586cf0"
-  version = "v0.5.2-beta"
+  revision = "8307ac89a4d7cd6f06969fd78ae71f972a220787"
+  version = "v0.6.1-beta-rc2"
 
 [[projects]]
   digest = "1:ff5ebae34cfbf047d505ee150de27e60570e8c394b3b8fdbb720ff6ac71985fc"
@@ -183,7 +213,7 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:3c36e1e5f893a68fccc0587cfee519b67b93cf1b2e9c331c733c1a62515e9447"
+  digest = "1:2d0210bb4aa6998d94862e0bb097ff73e065975aa704f197b037b35b6234b6d5"
   name = "golang.org/x/crypto"
   packages = [
     "curve25519",
@@ -193,6 +223,7 @@
     "nacl/box",
     "nacl/secretbox",
     "poly1305",
+    "ripemd160",
     "salsa20/salsa",
   ]
   pruneopts = "UT"

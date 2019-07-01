@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strconv"
 
 	"github.com/lightningnetwork/lnd/lnrpc"
 )
@@ -38,6 +39,12 @@ type PendingChannelsStats struct {
 
 type ChannelsBalanceStats struct {
 	TotalBalance int64
+}
+
+type ChannelBalanceStats struct {
+	BalanceSatoshis   int64
+	BalancePercentage float64
+	Labels            []string
 }
 
 // NewLightningClient creates an LightningClient.
@@ -144,6 +151,56 @@ func (client *LightningClient) GetChannelsBalanceStats() (*ChannelsBalanceStats,
 	stats.TotalBalance = info.Balance
 
 	return &stats, nil
+}
+
+func (client *LightningClient) GetChannelBalanceStats() ([]*ChannelBalanceStats, error) {
+	var stats []*ChannelBalanceStats
+
+	ctxb := context.Background()
+	req := &lnrpc.ListChannelsRequest{}
+
+	info, err := client.rpcclient.ListChannels(ctxb, req)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, ch := range info.Channels {
+		var cs ChannelBalanceStats
+		cs.Populate(ch)
+
+		stats = append(stats, &cs)
+	}
+
+	return stats, nil
+}
+
+func (cs *ChannelBalanceStats) Populate(ch *lnrpc.Channel) {
+
+	cs.BalanceSatoshis = ch.LocalBalance
+
+	// calculator the percentage of balance local (removing the commit fee)
+	realCapacity := float64(ch.Capacity) - float64(ch.CommitFee)
+	cs.BalancePercentage = float64(ch.LocalBalance) / realCapacity
+
+	// create labels for metric
+	cs.Labels = []string{
+		// active
+		strconv.FormatBool(ch.Active),
+		// remote_pubkey
+		ch.RemotePubkey,
+		// chan_point
+		ch.ChannelPoint,
+		// chan_id
+		strconv.FormatUint(ch.ChanId, 10),
+		// capacity
+		strconv.FormatInt(ch.Capacity, 10),
+		// commit_fee
+		strconv.FormatInt(ch.CommitFee, 10),
+		// private
+		strconv.FormatBool(ch.Private),
+		// initator
+		strconv.FormatBool(ch.Initiator),
+	}
 }
 
 func boolToInt(arg bool) uint8 {
