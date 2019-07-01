@@ -1,6 +1,8 @@
-[![Build Status](https://travis-ci.org/platanus/lightning-prometheus-exporter.svg?branch=master)](https://travis-ci.org/platanus/lightning-prometheus-exporter) [![](https://images.microbadger.com/badges/version/platanus/lightning-prometheus-exporter.svg)](https:/hub.docker.com/r/platanus/lightning-prometheus-exporter) [![Go Report Card](https://goreportcard.com/badge/github.com/platanus/lightning-prometheus-exporter)](https://goreportcard.com/report/github.com/platanus/lightning-prometheus-exporter)
+[![](https://images.microbadger.com/badges/version/RadarTech/lightning-prometheus-exporter.svg)](https:/hub.docker.com/r/radarion/lightning-prometheus-exporter) [![Go Report Card](https://goreportcard.com/badge/github.com/RadarTech/lightning-prometheus-exporter)](https://goreportcard.com/report/github.com/RadarTech/lightning-prometheus-exporter)
 
-# lightning Prometheus Exporter
+This is a fork of https://github.com/platanus/lightning-prometheus-exporter
+
+# Lightning Prometheus Exporter
 
 lightning Prometheus exporter makes it possible to monitor lightning node using Prometheus.
 
@@ -48,10 +50,6 @@ Usage of ./lightning-prometheus-exporter:
 
 The exporter logs errors to the standard output. When using Docker, if the exporter doesn’t work as expected, check its logs using [docker logs](https://docs.docker.com/engine/reference/commandline/logs/) command.
 
-## Releases
-
-For each release, we publish the corresponding Docker image at `platanus/lightning-prometheus-exporter` [DockerHub repo](https://hub.docker.com/r/platanus/lightning-prometheus-exporter/) and the binaries on the GitHub [releases page](https://github.com/platanus/lightning-prometheus-exporter/releases).
-
 ## Building the Exporter
 
 You can build the exporter using the provided Makefile. Before building the exporter, make sure the following software is installed on your machine:
@@ -64,7 +62,7 @@ You can build the exporter using the provided Makefile. Before building the expo
 
 To build the Docker image with the exporter, run:
 ```
-$ make container
+$ make docker
 ```
 
 Note: go is not required, as the exporter binary is built in a Docker container. See the [Dockerfile](Dockerfile).
@@ -76,9 +74,7 @@ To build the binary, run:
 $ make
 ```
 
-Note: the binary is built for the OS/arch of your machine. To build binaries for other platforms, see the [Makefile](Makefile).
-
-The binary is built with the name `lightning-prometheus-exporter`.
+The binary is built with the name `exporter`.
 
 ## Credits
 
